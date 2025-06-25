@@ -177,9 +177,13 @@ class AcademicSearchEngine:
         """Index all supported files in a folder"""
         folder_path = Path(folder_path)
         cache_file = self.cache_dir / f"index_{folder_path.name}.pkl"
+
+        print(f"Cache file: {cache_file}")
+
+        # cache_file = r'C:\Users\jonas\code\AdvSpec\.search_cache.pkl'
         
         # Check if cache exists and is recent
-        if not force_rebuild and cache_file.exists():
+        if not force_rebuild:# and cache_file.exists():
             print("Loading cached index...")
             self._load_cache(cache_file)
             return
@@ -283,21 +287,16 @@ class AcademicSearchEngine:
         # print(scores_ce)
 
         scores = [scores_ce+10]
-
-
-        print(scores)
-        print(indices)
         
         # Format results
         results = []
-
-        sorted_indices = np.argsort(scores[0])[::-1]  # Sort by score descending
-
-        for i, (score, idx) in enumerate(zip(scores[0], indices[0])):
-            if score >= min_score and i in sorted_indices[:top_k]:  # Filter by minimum score
+        for i, (score, idx) in enumerate(zip(scores_ce, indices[0])):
+            if score >= min_score and idx < len(self.documents):
                 results.append((self.documents[idx], float(score)))
         
-        return results
+        # Sort by score and return top_k
+        results.sort(key=lambda x: x[1], reverse=True)
+        return results[:top_k]
     
     def _save_cache(self, cache_file: Path) -> None:
         """Save index to cache"""
