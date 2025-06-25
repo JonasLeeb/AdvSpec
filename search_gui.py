@@ -51,6 +51,9 @@ class SearchGUI:
         ttk.Button(folder_frame, text="Browse", command=self.browse_folder).grid(row=0, column=1)
         ttk.Button(folder_frame, text="Index", command=self.index_documents).grid(row=0, column=2, padx=(5, 0))
         
+        ttk.Button(folder_frame, text="Rebuild", command=lambda: self.index_documents(force_rebuild=True)).grid(row=0, column=3, padx=(5, 0))
+
+
         # Status bar
         self.status_var = tk.StringVar()
         self.status_var.set("Ready")
@@ -151,7 +154,7 @@ class SearchGUI:
         if folder:
             self.folder_var.set(folder)
     
-    def index_documents(self):
+    def index_documents(self, force_rebuild=False):
         """Index documents in the selected folder"""
         folder_path = self.folder_var.get().strip()
         if not folder_path:
@@ -172,7 +175,7 @@ class SearchGUI:
                 from Search_engine import AcademicSearchEngine
                 
                 self.engine = AcademicSearchEngine()
-                self.engine.index_folder(folder_path, force_rebuild=True)
+                self.engine.index_folder(folder_path, force_rebuild=force_rebuild)
 
                 
                 # Update UI in main thread
