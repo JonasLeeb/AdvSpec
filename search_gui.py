@@ -8,6 +8,7 @@ from pathlib import Path
 import threading
 from typing import List, Tuple, Optional
 import os
+import markdown
 
 # Import your existing search engine classes
 from Search_engine import AcademicSearchEngine, Document
@@ -297,6 +298,57 @@ class SearchGUI:
         if 0 <= rank < len(self.current_results):
             doc, score = self.current_results[rank]
             self.open_file(doc.file_path, doc.page_num)
+
+    def open_markdown_file(self, file_path: str, page_num: Optional[int] = None):
+        # Convert Markdown to HTML
+        # Read Markdown content
+        with open(file_path, "r", encoding="utf-8") as f:
+            md_content = f.read()
+
+        # Convert Markdown to HTML (with MathJax support)
+        html_content = markdown.markdown(
+            md_content,
+            extensions=[
+                'pymdownx.arithmatex',  # LaTeX math support
+                'pymdownx.superfences',  # Needed for code blocks
+                'pymdownx.highlight'    # Syntax highlighting
+            ],
+            extension_configs={
+                'pymdownx.arithmatex': {
+                    'generic': True,  # Use MathJax
+                }
+            }
+        )
+
+        html_file = "temp_rendered.html"
+        # Check if the file exists, if not create it
+        if not os.path.exists(html_file):
+            with open(html_file, "w", encoding="utf-8") as f:
+                f.write("")
+
+        # Write HTML with MathJax loading
+        with open(html_file, "w", encoding="utf-8") as f:
+            f.write(f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Markdown Preview</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@5/github-markdown.min.css">
+                <style>
+                    .markdown-body {{ box-sizing: border-box; min-width: 200px; max-width: 980px; margin: 0 auto; padding: 45px; }}
+                    @media (max-width: 767px) {{ .markdown-body {{ padding: 15px; }} }}
+                </style>
+                <!-- Load MathJax -->
+                <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+                <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+            </head>
+            <body class="markdown-body">
+                {html_content}
+            </body>
+            </html>
+            """)
+
     
     def open_file(self, file_path: str, page_num: Optional[int] = None):
         """Open file with system default application"""
@@ -312,7 +364,14 @@ class SearchGUI:
                 formatted_path = f"file:///{file_path.as_posix()}"
             
             print(f"Opening: {formatted_path}")  # Debugging output
-            
+
+            if file_path.suffix.lower() == '.md':
+                # If it's a Markdown file, open it in a web browser
+                self.open_markdown_file(file_path, page_num)
+                webbrowser.open(f"file:///{Path('temp_rendered.html').resolve().as_posix()}")
+                return
+
+
             if not file_path.exists():
                 messagebox.showerror("Error", f"File not found: {file_path}")
                 return
@@ -322,8 +381,6 @@ class SearchGUI:
             if system == "Windows":
                 # os.startfile(str(formatted_path))
                 subprocess.run([r"C:\Program Files\Mozilla Firefox\firefox.exe", formatted_path])
-
-                print("Opened on Windows")
             elif system == "Darwin":  # macOS
                 subprocess.run(["open", str(formatted_path)])
             else:  # Linux and others

@@ -1,0 +1,203 @@
+
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Markdown Preview</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@5/github-markdown.min.css">
+                <style>
+                    .markdown-body { box-sizing: border-box; min-width: 200px; max-width: 980px; margin: 0 auto; padding: 45px; }
+                    @media (max-width: 767px) { .markdown-body { padding: 15px; } }
+                </style>
+                <!-- Load MathJax -->
+                <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+                <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+            </head>
+            <body class="markdown-body">
+                <p>2025-06-24 18:57</p>
+<p>Status:</p>
+<p>Tags:</p>
+<h1>notes NotebookLM audio 1 AdvSpec</h1>
+<h2>Single Molecule Spectroscopy</h2>
+<p>Molecules can diffuse out of detection volume</p>
+<p>HIgh fluorescence quantum yield, emits every photon it absorbs</p>
+<p>Longwave length excitation minimizes influesnces from scattering</p>
+<p>high photostability </p>
+<p>Low intersystem crossing
+    Non radiative process (often)
+        Triplet state has long lifetime
+        Molecule cant fluoresce 
+        higher likelyhood of quenching
+        higher likelyhood of photobleaching</p>
+<p>The smaller the sample volume the less likely interference from impurities</p>
+<p>Single molecule at room temperature
+    molecule moves and changes its conformation
+    phonon vibrations
+    solvent molecules around it move</p>
+<p>inhomogeneous broadening:
+    electron phonon interactions
+    matrix orientation
+homogenous broadening
+    dynamic processes</p>
+<p>-&gt; then only limited by heisenberg</p>
+<p>Cooling single molecules to cryogenic temperatures reduces electron phonon interactions 
+(coupling between electronic state and vibrations of surrounding lattice)</p>
+<h2>FLN</h2>
+<p>since we only excite a single species we can resolve the phonon sidebands</p>
+<p>phonon sidebands tell us about how the molecule is interacting with the lattice</p>
+<p>Infer nature of bond by comparing sidebands from experiment with well known interactions</p>
+<h2>Raman and IR</h2>
+<p>complementary techniques</p>
+<h3>IR</h3>
+<p>Selection rule:
+    Must cause change in electric dipole moment
+    vibration cannot be symmetric like 0_2,...</p>
+<h3>Raman</h3>
+<p>Selection rule:
+    must change polarizability
+    vibration involving larger atoms
+    conjugated dubble bonds
+    many similar bonds (rings)</p>
+<p>Raman signals are weak:
+    inelastic scattering
+    orders of magnitude less likely than rayleigh</p>
+<pre class="highlight"><code>shorter exciation increases signal
+4th power of scattered frequency
+    -&gt; shorter frequecny is better but more fluorescecne interferene</code></pre>
+<p>Major problem: fluorescence
+- shifted excitation wavelength spectroscopy
+- deep uv excitation
+- time gated detection
+    - detector needs to be rapidly gated (intensifier)
+    - 10-100 fold suppression
+    - system needs very careful calibration
+    - shorter laser pulses mean broader bandwidth
+    - intensifier can broaden spectrum slightly
+    - can also be used to resolve depth
+        - optical path length depends on refractive index and scattering probability</p>
+<h2>Fluorescence</h2>
+<p>reabsorbance</p>
+<p>varying sensitivity of graitng/detector</p>
+<p>interference from impurities</p>
+<h2>Lasers</h2>
+<p>Saturation:
+- rate of excitation is the same or higher as rate of relaxation
+    - depletion of ground state
+- Unlikely with CW
+- Often in single molecule exciation (pulsed laser)</p>
+<p>Photodegradation</p>
+<h3>Quenching</h3>
+<p>Differentiate by measuring the fluorescence lifetime</p>
+<h4>Static</h4>
+<p>quencher binds directly to fluorophore</p>
+<p>form stable non fluorescent complex</p>
+<p>depends on binding constant of complex and quencher concentration</p>
+<p>number of fluorescence molecules is reduced but lifetime of excited state is not reduced</p>
+<h4>Dynamic</h4>
+<p>Collision between excited state fluorophore and quencher on very fast timescale (ns)</p>
+<p>efficiency depends on quencher concentration and collision rate also on fluorescence lifetime</p>
+<h2>Separation methods</h2>
+<p>Lack of broad tunability is liming factor</p>
+<p>Real world samples have strong fluorescent background</p>
+<h2>Phosphorescence</h2>
+<p>Can be used in separation</p>
+<p>Singlet to Triplet state</p>
+<p>Lifetimes in microsecond range</p>
+<p>time gated detection</p>
+<p>more time for diffusion due to longer lifetime</p>
+<p>quenching highly likely with oxygen</p>
+<ul>
+<li>quenched detection modes:<ul>
+<li>use strong phosphorophore to generate constant signal</li>
+<li>reagent quenches phosphorescence</li>
+</ul>
+</li>
+<li>
+<p>sensitized phosphorescence:</p>
+<ul>
+<li>add strong phosphorophore</li>
+<li>analyte transfers energy to the phosphorophore and enhances its emission</li>
+</ul>
+</li>
+<li>
+<p>chiral separations</p>
+<ul>
+<li>quenching can be different for the two versions of the chiral phosphorophore</li>
+</ul>
+</li>
+</ul>
+<h2>fluorescence probes</h2>
+<ul>
+<li>local polarity<ul>
+<li>polarity of the solvent influences the emission wavelength of the fluorophore</li>
+<li>A strong red shift is caused by a strong charge separation in the excited state (see [[notes NotebookLM audio 1 AdvSpec#Solvatochrmoism]])</li>
+</ul>
+</li>
+<li>pH</li>
+<li>viscosity (how fast things can change)</li>
+<li>Ion concentration</li>
+</ul>
+<h2>Fret</h2>
+<ul>
+<li></li>
+</ul>
+<h2>Solvatochrmoism (Polarity Probe)</h2>
+<p>Electron distribution becomes more polarized in excited state</p>
+<ul>
+<li>Solvent molecules reorientate to stabilize this new electron distribution</li>
+<li>The more polar the solvent the more the excited state is stabilized</li>
+<li>stabilization means the excited states energy is lowered
+    -&gt; emission to ground state wavelength increases
+    -&gt; ground state energy is also raised slightly (becuase the solvent molecules have reoriented, so that the excited state is more energetically favorable)</li>
+<li>Depends on how quickly the solvent molecules can reorientate
+    -&gt; For high Viscosity the excited state cannot be fully stabilized before the molecule emits
+    -&gt; Shorter wavelength than for lower viscosity and same polarity of solvent</li>
+<li>can be used to classify micro plastics<ul>
+<li>Nile Red is used to as a fluorescent dye</li>
+<li>NR adsorbs to the surface of polymers but not other stuff in the solution</li>
+<li>surface polarity is different between differnt types of plastics, which results in a different emission wavelength of the fluorescence of NR</li>
+</ul>
+</li>
+</ul>
+<h3>pH sensitivity</h3>
+<ul>
+<li>different properties for protonated (acidic) and deprotonated (basic) forms. Ratio depedns on local pH and probes pK<span class="arithmatex">\(_a\)</span>  (pH = pKa + log([A⁻]/[HA]))</li>
+<li>Intensity based pH probes:<ul>
+<li>acidic and basic forms of fluorophore have different quantum yields (<span class="arithmatex">\(\phi\)</span>)</li>
+<li>if one form is highly fluorescent, the total emission will tell us about changes in pH</li>
+<li>Disadvantages:<ul>
+<li>Probe concentration must be well known</li>
+<li>Inner filter effects</li>
+<li>Photodegradation affects measurements</li>
+<li>Instrument variations</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Ratiometric pH probes<ul>
+<li>acidic and basic forms have different emission wavelengths
+-&gt; Measure fluorescence at two different wavelengths and look at ratio
+-&gt; Eliminates concetration dependence</li>
+<li>Example: Excited-State Intramolecular Proton Transfer (ESIPT)<ul>
+<li>In the excited state the molecule transfers a proton from one site to another, changing its emission properties, this depends on ph and polarity</li>
+<li>Back proton transfer (BPT) in ground state</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3>Viscosity Porbes 2</h3>
+<p>Fluorescent molecules have a transition dipole moment, we get maximum absorption for light that is polarized parallel to the dipole moment.</p>
+<p>Similar for emission</p>
+<p>-&gt; If molecules dont move during excited state lifetime polarization is kept
+-&gt; If molecules do move it is scrambled
+-&gt; how much they move depends on solvent viscosity</p>
+<p><span class="arithmatex">\(P = (I_{‖} - I_{⊥}) / (I_{‖} + I_{⊥}) \leq 0.5\)</span> </p>
+<p><span class="arithmatex">\(P=0\)</span> means completely free rotation</p>
+<p>Applications:
+- Folded Protein Immobilized vs Unfolded protein: probe is mobile
+- Drug: bound -&gt; relatively fixed, free -&gt; can rotate freely</p>
+<h2>References</h2>
+            </body>
+            </html>
+            

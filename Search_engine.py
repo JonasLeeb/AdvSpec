@@ -68,6 +68,19 @@ class DocumentProcessor:
         except Exception as e:
             print(f"Error reading text file {file_path}: {e}")
             return ""
+        
+    @staticmethod
+    def read_html(file_path: str) -> str:
+        """Read HTML file and extract plain text"""
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
+                # Simple HTML tag removal
+                text = re.sub(r'<[^>]+>', '', content)
+                return text
+        except Exception as e:
+            print(f"Error reading HTML file {file_path}: {e}")
+            return ""
 
 class TextChunker:
     """Handles intelligent text chunking for better search results"""
@@ -191,7 +204,7 @@ class AcademicSearchEngine:
         print(f"Indexing folder: {folder_path}")
         
         # Supported file extensions
-        supported_extensions = {'.pdf', '.md', '.txt', '.markdown'}
+        supported_extensions = {'.pdf', '.md', '.txt', '.markdown', '.html'}
         
         # Find all supported files
         files = []
@@ -245,6 +258,10 @@ class AcademicSearchEngine:
                 text = self.processor.read_text(str(file_path))
                 return self.chunker.chunk_text(text, str(file_path), 'text')
             
+            elif file_ext == '.html':
+                text = self.processor.read_html(str(file_path))
+                return self.chunker.chunk_text(text, str(file_path), 'html')
+   
         except Exception as e:
             print(f"Error processing {file_path}: {e}")
         
