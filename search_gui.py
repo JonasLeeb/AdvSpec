@@ -87,6 +87,12 @@ class SearchGUI:
         self.min_score_var = tk.StringVar(value="0.2")
         min_score_entry = ttk.Entry(options_frame, textvariable=self.min_score_var, width=8)
         min_score_entry.grid(row=0, column=3)
+
+        # File type filter
+        ttk.Label(options_frame, text="File Type:").grid(row=0, column=4, padx=(0, 5))
+        self.file_type_var = tk.StringVar(value="All")
+        file_type_combo = ttk.Combobox(options_frame, textvariable=self.file_type_var, values=["All", "pdf", "md", "txt", "html"], width=8)
+        file_type_combo.grid(row=0, column=5)
         
         # Results section
         results_frame = ttk.LabelFrame(main_frame, text="Search Results", padding="5")
@@ -200,7 +206,7 @@ class SearchGUI:
         self.status_var.set("Error occurred")
         self.root.config(cursor="")
         messagebox.showerror("Error", message)
-    
+        
     def search_documents(self):
         """Search for documents"""
         if self.engine is None:
@@ -215,6 +221,7 @@ class SearchGUI:
         try:
             top_k = int(self.top_k_var.get())
             min_score = float(self.min_score_var.get())
+            file_type_filter = self.file_type_var.get().strip().lower()
         except ValueError:
             messagebox.showerror("Error", "Invalid search parameters")
             return
@@ -226,12 +233,17 @@ class SearchGUI:
         def search_thread():
             try:
                 results = self.engine.search(query, top_k=top_k, min_score=min_score)
+                
+                # Filter results by file type
+                if file_type_filter != "all":
+                    results = [result for result in results if result[0].file_type.lower() == file_type_filter]
+                
                 self.root.after(0, lambda: self.display_results(results))
             except Exception as e:
                 self.root.after(0, lambda: self.show_error(f"Search failed: {str(e)}"))
         
         threading.Thread(target=search_thread, daemon=True).start()
-    
+        
     def display_results(self, results):
         """Display search results in the treeview"""
         self.current_results = results
