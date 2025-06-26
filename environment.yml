@@ -188,4 +188,3 @@ dependencies:
   - zstd=1.5.7=hbeecb71_2
   - pip:
       - pymdown-extensions==10.16
-prefix: C:\Users\jonas\anaconda3\envs\AdvSpec
