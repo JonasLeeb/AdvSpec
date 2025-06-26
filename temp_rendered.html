@@ -14,190 +14,147 @@
                 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
             </head>
             <body class="markdown-body">
-                <p>2025-06-24 18:57</p>
+                <p>2025-06-04 11:49</p>
 <p>Status:</p>
-<p>Tags:</p>
-<h1>notes NotebookLM audio 1 AdvSpec</h1>
-<h2>Single Molecule Spectroscopy</h2>
-<p>Molecules can diffuse out of detection volume</p>
-<p>HIgh fluorescence quantum yield, emits every photon it absorbs</p>
-<p>Longwave length excitation minimizes influesnces from scattering</p>
-<p>high photostability </p>
-<p>Low intersystem crossing
-    Non radiative process (often)
-        Triplet state has long lifetime
-        Molecule cant fluoresce 
-        higher likelyhood of quenching
-        higher likelyhood of photobleaching</p>
-<p>The smaller the sample volume the less likely interference from impurities</p>
-<p>Single molecule at room temperature
-    molecule moves and changes its conformation
-    phonon vibrations
-    solvent molecules around it move</p>
-<p>inhomogeneous broadening:
-    electron phonon interactions
-    matrix orientation
-homogenous broadening
-    dynamic processes</p>
-<p>-&gt; then only limited by heisenberg</p>
-<p>Cooling single molecules to cryogenic temperatures reduces electron phonon interactions 
-(coupling between electronic state and vibrations of surrounding lattice)</p>
-<h2>FLN</h2>
-<p>since we only excite a single species we can resolve the phonon sidebands</p>
-<p>phonon sidebands tell us about how the molecule is interacting with the lattice</p>
-<p>Infer nature of bond by comparing sidebands from experiment with well known interactions</p>
-<h2>Raman and IR</h2>
-<p>complementary techniques</p>
-<h3>IR</h3>
-<p>Selection rule:
-    Must cause change in electric dipole moment
-    vibration cannot be symmetric like 0_2,...</p>
-<h3>Raman</h3>
-<p>Selection rule:
-    must change polarizability
-    vibration involving larger atoms
-    conjugated dubble bonds
-    many similar bonds (rings)</p>
-<p>Raman signals are weak:
-    inelastic scattering
-    orders of magnitude less likely than rayleigh</p>
-<pre class="highlight"><code>shorter exciation increases signal
-4th power of scattered frequency
-    -&gt; shorter frequecny is better but more fluorescecne interferene</code></pre>
-<p>Major problem: fluorescence
-- shifted excitation wavelength spectroscopy
-- deep uv excitation
-- time gated detection
-    - detector needs to be rapidly gated (intensifier)
-    - 10-100 fold suppression
-    - system needs very careful calibration
-    - shorter laser pulses mean broader bandwidth
-    - intensifier can broaden spectrum slightly
-    - can also be used to resolve depth
-        - optical path length depends on refractive index and scattering probability</p>
-<h2>Fluorescence</h2>
-<p>reabsorbance</p>
-<p>varying sensitivity of graitng/detector</p>
-<p>interference from impurities</p>
-<h2>Lasers</h2>
-<p>Saturation:
-- rate of excitation is the same or higher as rate of relaxation
-    - depletion of ground state
-- Unlikely with CW
-- Often in single molecule exciation (pulsed laser)</p>
-<p>Photodegradation</p>
-<h3>Quenching</h3>
-<p>Differentiate by measuring the fluorescence lifetime</p>
-<h4>Static</h4>
-<p>quencher binds directly to fluorophore</p>
-<p>form stable non fluorescent complex</p>
-<p>depends on binding constant of complex and quencher concentration</p>
-<p>number of fluorescence molecules is reduced but lifetime of excited state is not reduced</p>
-<h4>Dynamic</h4>
-<p>Collision between excited state fluorophore and quencher on very fast timescale (ns)</p>
-<p>efficiency depends on quencher concentration and collision rate also on fluorescence lifetime</p>
-<h2>Separation methods</h2>
-<p>Lack of broad tunability is liming factor</p>
-<p>Real world samples have strong fluorescent background</p>
-<h2>Phosphorescence</h2>
-<p>Can be used in separation</p>
-<p>Singlet to Triplet state</p>
-<p>Lifetimes in microsecond range</p>
-<p>time gated detection</p>
-<p>more time for diffusion due to longer lifetime</p>
-<p>quenching highly likely with oxygen</p>
+<p>Tags: [[Advanced Spectroscopy]], [[Lecture Summary]]</p>
+<h1>Lecture 2 Adv Spectroscopy IR and Raman Spectroscopy</h1>
+<h2>Molecular Vibrations</h2>
+<h3>Fundamentals</h3>
 <ul>
-<li>quenched detection modes:<ul>
-<li>use strong phosphorophore to generate constant signal</li>
-<li>reagent quenches phosphorescence</li>
+<li>Can be modeled as harmonic oscillators (spring-mass system)</li>
+<li>Frequency depends on bond strength and atomic masses<ul>
+<li><span class="arithmatex">\(\nu = \frac{1}{2\pi}{\sqrt{ \frac{{k(m_{1}+m_{2})}}{m_{1}\cdot m_{2}} }}\)</span></li>
 </ul>
 </li>
-<li>
-<p>sensitized phosphorescence:</p>
+<li>Two complementary techniques to probe this mode: IR absorption and Raman scattering</li>
+</ul>
+<h3>IR vs Raman Selection Rules</h3>
 <ul>
-<li>add strong phosphorophore</li>
-<li>analyte transfers energy to the phosphorophore and enhances its emission</li>
+<li>IR: Requires change in electric dipole moment during vibration <ul>
+<li>light needs to couple to the vibration, this only works if there is a change in dipole moment</li>
+<li><span class="arithmatex">\(C=C\)</span> stretch works since double (and triple) bonds are easily polarizable</li>
+<li>symmetric molecules like <span class="arithmatex">\(CO_2\)</span> don't work</li>
 </ul>
 </li>
-<li>
-<p>chiral separations</p>
+<li>Raman: Requires polarizability to change during the vibration<ul>
+<li>Raman distorts the electronic cloud, if the cloud is easily distorted and this changes the polarizability (symmetric distortion often don't change polarizability) one gets a strong Raman signal </li>
+<li>Polarizablility is affected by: size of atoms (larger is better), conjugated systems (Delocalized electrons is good), symmetric molecules (often highly polarizable), many identical bonds</li>
+</ul>
+</li>
+<li>For more see [[Notes on selection rules for Raman and IR (AI)]]</li>
+</ul>
+<h2>Raman scattering mechanism</h2>
 <ul>
-<li>quenching can be different for the two versions of the chiral phosphorophore</li>
+<li>most scattering is elastic (<span style="color:rgb(0, 176, 80)">Rayleigh</span>), so no change in energy</li>
+<li>much rarer: part of the photon energy is transferred into a vibrational mode of the <span style="color:rgb(255, 0, 0)">mole</span><span style="color:rgb(255, 255, 0)">cule</span></li>
+<li>difference in energy corresponds to a vibrational quantum</li>
+<li><em>Stokes:</em> electron is in the ground state before excitation</li>
+<li><em>Anti-Stokes:</em> electron is in a vibrational state -&gt; Raman scattered photon can get higher energy than before scattering (much rarer, since dependent on vibrational level it is bolzmann distributed)<ul>
+<li>Ratio of anti stokes vs stokes <span class="arithmatex">\(\frac{N_{1}}{N_{0}}=\exp\left( -\frac{\Delta E}{kT} \right)\)</span>, <span class="arithmatex">\(kT \approx 200 cm^{-1}\)</span> at room T (or 210 cm<span class="arithmatex">\(^{-1}\)</span> at 300K)</li>
+<li>If Temperature is not room temp use formula from [[Lecture 1 Adv Spectroscopy Fluorescence]], but watch out for the units (cm<span class="arithmatex">\(^{-1}\)</span>)</li>
+</ul>
+</li>
+<li>Usually we measure the shift from the original energy of the photon (Raman shift), so that the original energy doesn't matter</li>
+<li>Raman intensity: <span class="arithmatex">\(I_{R} = k \cdot l_{0} \cdot \alpha \cdot v_{4}\)</span><ul>
+<li><span class="arithmatex">\(I_{0}\)</span> is the laser power, which depends on the absorption and photodamage</li>
+<li><span class="arithmatex">\(\alpha\)</span> is the polarizability (molecular property), which can be influenced in RRS</li>
+<li><span class="arithmatex">\(k\)</span> is the instrument factor. This must be optimized</li>
+<li><span class="arithmatex">\(v^4\)</span> is an effect that increases the Raman signal dramatically for shorter excitation wavelengths (longer wavelengths are more commonly used due to less fluorescence interference)</li>
 </ul>
 </li>
 </ul>
-<h2>fluorescence probes</h2>
+<p>![[Pasted image 20250604123328.png|300]]</p>
+<h2>Applications of Raman Spectroscopy</h2>
 <ul>
-<li>local polarity<ul>
-<li>polarity of the solvent influences the emission wavelength of the fluorophore</li>
-<li>A strong red shift is caused by a strong charge separation in the excited state (see [[notes NotebookLM audio 1 AdvSpec#Solvatochrmoism]])</li>
-</ul>
-</li>
-<li>pH</li>
-<li>viscosity (how fast things can change)</li>
-<li>Ion concentration</li>
-</ul>
-<h2>Fret</h2>
-<ul>
+<li>Art authentication (Fast, simple, non invasive)</li>
+<li>Identification of microplastics</li>
+<li>Cancer diagnosis (small differences in lipid/protein ratios)</li>
 <li></li>
 </ul>
-<h2>Solvatochrmoism (Polarity Probe)</h2>
-<p>Electron distribution becomes more polarized in excited state</p>
+<h2>Practical Advantages and Limitations</h2>
+<h3>Strengths</h3>
 <ul>
-<li>Solvent molecules reorientate to stabilize this new electron distribution</li>
-<li>The more polar the solvent the more the excited state is stabilized</li>
-<li>stabilization means the excited states energy is lowered
-    -&gt; emission to ground state wavelength increases
-    -&gt; ground state energy is also raised slightly (becuase the solvent molecules have reoriented, so that the excited state is more energetically favorable)</li>
-<li>Depends on how quickly the solvent molecules can reorientate
-    -&gt; For high Viscosity the excited state cannot be fully stabilized before the molecule emits
-    -&gt; Shorter wavelength than for lower viscosity and same polarity of solvent</li>
-<li>can be used to classify micro plastics<ul>
-<li>Nile Red is used to as a fluorescent dye</li>
-<li>NR adsorbs to the surface of polymers but not other stuff in the solution</li>
-<li>surface polarity is different between differnt types of plastics, which results in a different emission wavelength of the fluorescence of NR</li>
+<li>Boadly applicable</li>
+<li>Possible to measure in-situ</li>
+<li>Non-contact, non-destructive</li>
+<li>Molecular identification (also gives information about the environment, crystal form, binding, etc)</li>
+<li>Little or no sample prep required</li>
+<li>Little interference from water</li>
+<li>Submicrometer  spatial resolution</li>
 </ul>
-</li>
-</ul>
-<h3>pH sensitivity</h3>
+<h3>Weaknesses</h3>
 <ul>
-<li>different properties for protonated (acidic) and deprotonated (basic) forms. Ratio depedns on local pH and probes pK<span class="arithmatex">\(_a\)</span>  (pH = pKa + log([A⁻]/[HA]))</li>
-<li>Intensity based pH probes:<ul>
-<li>acidic and basic forms of fluorophore have different quantum yields (<span class="arithmatex">\(\phi\)</span>)</li>
-<li>if one form is highly fluorescent, the total emission will tell us about changes in pH</li>
-<li>Disadvantages:<ul>
-<li>Probe concentration must be well known</li>
-<li>Inner filter effects</li>
-<li>Photodegradation affects measurements</li>
-<li>Instrument variations</li>
+<li>Inherently weak signal</li>
+<li>Spectral resolution (line width) limited by bandwidth of excitation source</li>
+<li>Poor sensitivity under dilute conditions (Raman signal dominated by solvent/matrix)</li>
+<li>For low energy excitation (NIR) the resulting Raman photons have very low energy and are hard to detect, especially for higher vibrational states
+ ![[Pasted image 20250611153136.png|200]]</li>
 </ul>
-</li>
-</ul>
-</li>
-<li>Ratiometric pH probes<ul>
-<li>acidic and basic forms have different emission wavelengths
--&gt; Measure fluorescence at two different wavelengths and look at ratio
--&gt; Eliminates concetration dependence</li>
-<li>Example: Excited-State Intramolecular Proton Transfer (ESIPT)<ul>
-<li>In the excited state the molecule transfers a proton from one site to another, changing its emission properties, this depends on ph and polarity</li>
-<li>Back proton transfer (BPT) in ground state</li>
+<h2>Setups</h2>
+<ul>
+<li>Laser purity is essential, non pure laser will cause stray peaks</li>
+<li>Often backscattering setup (90 degree or not) setup</li>
+<li>Transmission setup for less signal from surface</li>
+<li>Fiber optic setups also possible (6 fibers for collection around one fiber for excitation)<ul>
+<li>Fiber optics have problem of also causing Raman signal:<ul>
+<li>use Bandpass filter at the end of excitation fiber to filter out Raman from fiber</li>
+<li>use long pass filter at entrance of collection fiber to filter our reflected laser light</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<h3>Viscosity Porbes 2</h3>
-<p>Fluorescent molecules have a transition dipole moment, we get maximum absorption for light that is polarized parallel to the dipole moment.</p>
-<p>Similar for emission</p>
-<p>-&gt; If molecules dont move during excited state lifetime polarization is kept
--&gt; If molecules do move it is scrambled
--&gt; how much they move depends on solvent viscosity</p>
-<p><span class="arithmatex">\(P = (I_{‖} - I_{⊥}) / (I_{‖} + I_{⊥}) \leq 0.5\)</span> </p>
-<p><span class="arithmatex">\(P=0\)</span> means completely free rotation</p>
-<p>Applications:
-- Folded Protein Immobilized vs Unfolded protein: probe is mobile
-- Drug: bound -&gt; relatively fixed, free -&gt; can rotate freely</p>
+<h2>Special modes of Raman</h2>
+<h3>Resonance Raman Spectroscopy (RRS)</h3>
+<h4>Concept:</h4>
+<ul>
+<li>Use excitation wavelength close to actual excited state (vibrational state of <span class="arithmatex">\(S_1\)</span>)
+    --&gt; Raman signals are orders of magnitude stronger</li>
+<li><span class="arithmatex">\(\alpha \approx \frac{1}{\omega_{Gl} - \omega_{L}- i T_{l}}\)</span></li>
+<li>Denominator becomes very small near excited states</li>
+<li>Only transitions that match the geometry change in the excited state get enhanced</li>
+</ul>
+<h4>Result:</h4>
+<p>Signal is enhanced by several orders of magnitude, but only for the chromophore (the part of a molecule that absorbs vis/UV light)</p>
+<h4>Problem:</h4>
+<ul>
+<li>Strong fluorescence interference often stronger than Raman signal</li>
+<li>Loss of information, since only chromophore bands are enhanced</li>
+</ul>
+<h4>Options to reduce fluorescence</h4>
+<ul>
+<li>Shifted excitation wavelength</li>
+<li>Adding quenchers (e.g. <span class="arithmatex">\(O_2\)</span>)</li>
+<li>Deep-UV excitation &lt; 260 nm</li>
+<li>Time-gated detection</li>
+</ul>
+<h3>Time-Resolved Raman</h3>
+<h4>Fluorescence suppression</h4>
+<ul>
+<li>Excitation: ps pulsed laser</li>
+<li>
+<p>Raman process is instantaneous -&gt; faster than fluorescence</p>
+</li>
+<li>
+<p>Gated detector closes before most of the fluorescence signal arrives (closing achieved using an Intensifier than can be switched off (Multichannel plate))</p>
+</li>
+<li>
+<p>Achieves 10-100x fluorescence suppression</p>
+</li>
+</ul>
+<p>Problem: For large samples not all the Raman signal arrives fast enough </p>
+<p>![[Pasted image 20250611162117.png|500]]</p>
+<h4>Subsurface Analysis (TRRS)</h4>
+<ul>
+<li>Raman photons from deeper layers arrive at the detector at a later time due to scattering</li>
+<li>Different time windows select different depths</li>
+<li>Effective photon speed 20x slower than in scattering media</li>
+<li>Applications: explosives detection through containers, astrobiology (looking inside stones)</li>
+</ul>
+<p>![[Pasted image 20250611162656.png]]</p>
 <h2>References</h2>
+<p>[[AdSpec Lect 2 IR, Raman and instrumentation 2025.pdf]], [[Lecture 1 Adv Spectroscopy Fluorescence]]</p>
+<p>[[Vibrational and Electronic States]]</p>
             </body>
             </html>
             

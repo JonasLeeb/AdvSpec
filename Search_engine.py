@@ -15,6 +15,7 @@ import argparse
 from tqdm import tqdm
 import torch
 
+
 @dataclass
 class Document:
     """Represents a document chunk with metadata"""
@@ -281,39 +282,200 @@ class AcademicSearchEngine:
         
         # Add embeddings to index
         self.index.add(self.embeddings.astype(np.float32))
-    
-    def search(self, query: str, top_k: int = 20, min_score: float = 0.2) -> List[Tuple[Document, float]]:
-        """Search for relevant documents"""
+        
+    def search(self, query: str, top_k: int = 20, min_score: float = 0.2, 
+            initial_candidates: int = 1000) -> List[Tuple[Document, float]]:
+        """
+        Search for relevant documents using hybrid retrieval + reranking
+        
+        Args:
+            query: Search query string
+            top_k: Number of results to return
+            min_score: Minimum cross-encoder score threshold
+            initial_candidates: Number of candidates from initial retrieval
+        """
         if self.index is None or self.embeddings is None:
             raise ValueError("Index not built. Call index_folder() first.")
         
-        # Encode query
+        # Encode and normalize query
         query_embedding = self.model.encode([query], convert_to_numpy=True)
         faiss.normalize_L2(query_embedding)
         
-        # Search
-        scores, indices = self.index.search(query_embedding.astype(np.float32), 1000)
-
-
-        candidates = [self.documents[idx] for idx in indices[0] if idx < len(self.documents)]
-
-        # print(candidates)
-
-        scores_ce = self.cross_encoder.predict([(query, str(doc)) for doc in candidates])
-
-        # print(scores_ce)
-
-        scores = [scores_ce+10]
+        # Initial retrieval with more candidates for better recall
+        retrieval_candidates = min(initial_candidates, len(self.documents))
+        faiss_scores, indices = self.index.search(
+            query_embedding.astype(np.float32), 
+            retrieval_candidates
+        )
         
-        # Format results
+        # Filter valid indices and get candidates
+        valid_candidates = []
+        valid_faiss_scores = []
+        
+        for score, idx in zip(faiss_scores[0], indices[0]):
+            if 0 <= idx < len(self.documents):
+                valid_candidates.append(self.documents[idx])
+                valid_faiss_scores.append(score)
+        
+        if not valid_candidates:
+            return []
+        
+        # Cross-encoder reranking
+        query_doc_pairs = [(query, str(doc)) for doc in valid_candidates]
+        ce_scores = self.cross_encoder.predict(query_doc_pairs)
+        
+        # Optional: Combine FAISS and cross-encoder scores
+        # You can experiment with different combination strategies:
+        
+        # Strategy 1: Use only cross-encoder scores (recommended for accuracy)
+        final_scores = ce_scores
+        
+        # Strategy 2: Weighted combination (uncomment to use)
+        # faiss_weight = 0.3
+        # ce_weight = 0.7
+        # # Normalize FAISS scores to [0,1] range
+        # normalized_faiss = [(s - min(valid_faiss_scores)) / 
+        #                    (max(valid_faiss_scores) - min(valid_faiss_scores) + 1e-8) 
+        #                    for s in valid_faiss_scores]
+        # final_scores = [ce_weight * ce + faiss_weight * faiss 
+        #                for ce, faiss in zip(ce_scores, normalized_faiss)]
+        
+        # Create results with score filtering
         results = []
-        for i, (score, idx) in enumerate(zip(scores_ce, indices[0])):
-            if score >= min_score and idx < len(self.documents):
-                results.append((self.documents[idx], float(score)))
+        for doc, score in zip(valid_candidates, final_scores):
+            if score >= min_score:
+                results.append((doc, float(score)))
         
-        # Sort by score and return top_k
+        # Sort by score (descending) and return top_k
         results.sort(key=lambda x: x[1], reverse=True)
         return results[:top_k]
+    
+    def _expand_query(self, query: str, top_docs: List[str], n_terms: int) -> str:
+        """Extract important terms from top documents to expand query"""
+        from collections import Counter
+        import re
+        
+        # Simple term extraction (you can use more sophisticated NLP)
+        all_words = []
+        for doc in top_docs:
+            words = re.findall(r'\b[a-zA-Z]{3,}\b', doc.lower())
+            all_words.extend(words)
+        
+        # Get most common terms not in original query
+        query_words = set(query.lower().split())
+        term_counts = Counter(word for word in all_words if word not in query_words)
+        
+        expansion_terms = [term for term, _ in term_counts.most_common(n_terms)]
+        return query + " " + " ".join(expansion_terms)
+    
+
+    def search_with_query_expansion(self, query: str, top_k: int = 20, min_score: float = 0.2,
+                                  expansion_terms: int = 3) -> List[Tuple[Document, float]]:
+        """
+        Query expansion using pseudo-relevance feedback
+        """
+        # Initial search with smaller top_k
+        initial_results = self.search(query, top_k=min(50, len(self.documents)), min_score=min_score)
+
+        if not initial_results:
+            return []
+        
+        # Extract terms from top documents for expansion
+        top_docs = [str(doc) for doc, _ in initial_results[:3]]
+        expanded_query = self._expand_query(query, top_docs, expansion_terms)
+        
+        # Search again with expanded query
+        return self.search(expanded_query, top_k=top_k, min_score=min_score)
+
+
+    def search_with_diversity(self, query: str, top_k: int = 20, min_score: float = 0.2,
+                            diversity_threshold: float = 0.85) -> List[Tuple[Document, float]]:
+        """
+        Search with diversity to avoid clustering similar documents
+        
+        Args:
+            diversity_threshold: Minimum cosine similarity to consider documents similar
+        """
+        # Get initial results with higher top_k for diversity filtering
+        initial_results = self.search(query, top_k=top_k*3, min_score=min_score)
+        
+        if not initial_results:
+            return []
+        
+        # Encode all result documents for similarity comparison
+        result_docs = [str(doc) for doc, _ in initial_results]
+        doc_embeddings = self.model.encode(result_docs, convert_to_numpy=True)
+        faiss.normalize_L2(doc_embeddings)
+        
+        # Select diverse results
+        diverse_results = [initial_results[0]]  # Always include top result
+        selected_embeddings = [doc_embeddings[0]]
+        
+        for i, (doc, score) in enumerate(initial_results[1:], 1):
+            current_embedding = doc_embeddings[i:i+1]
+            
+            # Check similarity with already selected documents
+            similarities = np.dot(selected_embeddings, current_embedding.T).flatten()
+            
+            # Add if not too similar to existing selections
+            if np.max(similarities) < diversity_threshold:
+                diverse_results.append((doc, score))
+                selected_embeddings.append(doc_embeddings[i])
+                
+                if len(diverse_results) >= top_k:
+                    break
+        
+        return diverse_results
+
+
+    def debug_search(self, query: str, top_k: int = 5) -> dict:
+        """
+        Debug version that returns detailed scoring information
+        """
+        if self.index is None or self.embeddings is None:
+            raise ValueError("Index not built. Call index_folder() first.")
+        
+        query_embedding = self.model.encode([query], convert_to_numpy=True)
+        faiss.normalize_L2(query_embedding)
+        
+        # Get more candidates for analysis
+        faiss_scores, indices = self.index.search(query_embedding.astype(np.float32), 50)
+        
+        candidates = []
+        valid_faiss_scores = []
+        
+        for score, idx in zip(faiss_scores[0], indices[0]):
+            if 0 <= idx < len(self.documents):
+                candidates.append(self.documents[idx])
+                valid_faiss_scores.append(score)
+        
+        if not candidates:
+            return {"error": "No valid candidates found"}
+        
+        # Get cross-encoder scores
+        ce_scores = self.cross_encoder.predict([(query, str(doc)) for doc in candidates])
+        
+        # Prepare debug info
+        debug_info = {
+            "query": query,
+            "total_candidates": len(candidates),
+            "faiss_score_range": (min(valid_faiss_scores), max(valid_faiss_scores)),
+            "ce_score_range": (min(ce_scores), max(ce_scores)),
+            "results": []
+        }
+        
+        for i, (doc, faiss_score, ce_score) in enumerate(zip(candidates[:top_k], 
+                                                            valid_faiss_scores[:top_k], 
+                                                            ce_scores[:top_k])):
+            debug_info["results"].append({
+                "rank": i + 1,
+                "document_preview": str(doc)[:200] + "..." if len(str(doc)) > 200 else str(doc),
+                "faiss_score": float(faiss_score),
+                "cross_encoder_score": float(ce_score),
+                "document_id": getattr(doc, 'id', 'unknown')
+            })
+        
+        return debug_info
     
     def _save_cache(self, cache_file: Path) -> None:
         """Save index to cache"""

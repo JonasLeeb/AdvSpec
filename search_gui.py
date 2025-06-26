@@ -9,6 +9,7 @@ import threading
 from typing import List, Tuple, Optional
 import os
 import markdown
+from PyPDF2 import PdfWriter, PdfReader
 
 # Import your existing search engine classes
 from Search_engine import AcademicSearchEngine, Document
@@ -84,7 +85,7 @@ class SearchGUI:
         top_k_combo.grid(row=0, column=1, padx=(0, 10))
         
         ttk.Label(options_frame, text="Min Score:").grid(row=0, column=2, padx=(0, 5))
-        self.min_score_var = tk.StringVar(value="0.2")
+        self.min_score_var = tk.StringVar(value="-20")
         min_score_entry = ttk.Entry(options_frame, textvariable=self.min_score_var, width=8)
         min_score_entry.grid(row=0, column=3)
 
@@ -231,16 +232,16 @@ class SearchGUI:
         self.status_var.set("Searching...")
         
         def search_thread():
-            try:
-                results = self.engine.search(query, top_k=top_k, min_score=min_score)
+            # try:
+                results = self.engine.search_with_query_expansion(query, top_k=top_k, min_score=min_score)
                 
                 # Filter results by file type
                 if file_type_filter != "all":
                     results = [result for result in results if result[0].file_type.lower() == file_type_filter]
                 
                 self.root.after(0, lambda: self.display_results(results))
-            except Exception as e:
-                self.root.after(0, lambda: self.show_error(f"Search failed: {str(e)}"))
+            # except Exception as e:
+            #     self.root.after(0, lambda: self.show_error(f"Search failed: {str(e)}"))
         
         threading.Thread(target=search_thread, daemon=True).start()
         
@@ -361,6 +362,35 @@ class SearchGUI:
             </html>
             """)
 
+    def highlight_text_in_pdf(self, input_pdf: str, output_pdf: str, page_num: int, text_to_highlight: str) -> None:
+        """Highlight specific text in a PDF file"""
+        try:
+            reader = PdfReader(input_pdf)
+            writer = PdfWriter()
+
+            # Get the page to modify
+            page = reader.pages[page_num - 1]
+
+            # Add a highlight annotation (requires external tools for rendering)
+            # Note: PyPDF2 does not directly support text highlighting, but you can add annotations.
+            highlight = {
+                "/Type": "/Annot",
+                "/Subtype": "/Highlight",
+                "/Rect": [100, 100, 300, 150],  # Example rectangle coordinates
+                "/Contents": text_to_highlight,
+            }
+            page.add_annotation(highlight)
+
+            # Add the modified page to the writer
+            writer.add_page(page)
+
+            # Write the modified PDF to a new file
+            with open(output_pdf, "wb") as f:
+                writer.write(f)
+
+            print(f"Highlighted PDF saved to {output_pdf}")
+        except Exception as e:
+            print(f"Error highlighting PDF: {e}")
     
     def open_file(self, file_path: str, page_num: Optional[int] = None):
         """Open file with system default application"""
@@ -382,8 +412,8 @@ class SearchGUI:
                 self.open_markdown_file(file_path, page_num)
                 webbrowser.open(f"file:///{Path('temp_rendered.html').resolve().as_posix()}")
                 return
-
-
+            
+            
             if not file_path.exists():
                 messagebox.showerror("Error", f"File not found: {file_path}")
                 return
